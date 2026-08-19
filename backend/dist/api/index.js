@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = handler;
+require("reflect-metadata");
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("../src/app.module");
 const common_1 = require("@nestjs/common");
@@ -27,6 +28,9 @@ async function handler(req, res) {
             if (!bootPromise) {
                 bootPromise = bootstrap().then(() => {
                     isReady = true;
+                }).catch((err) => {
+                    bootPromise = null;
+                    throw err;
                 });
             }
             await bootPromise;
@@ -38,6 +42,7 @@ async function handler(req, res) {
         return res.status(500).json({
             error: 'Backend Execution Error',
             message: err?.message || String(err),
+            stack: err?.stack,
         });
     }
 }

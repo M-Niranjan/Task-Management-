@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -28,6 +29,9 @@ export default async function handler(req: any, res: any) {
       if (!bootPromise) {
         bootPromise = bootstrap().then(() => {
           isReady = true;
+        }).catch((err) => {
+          bootPromise = null;
+          throw err;
         });
       }
       await bootPromise;
@@ -38,6 +42,7 @@ export default async function handler(req: any, res: any) {
     return res.status(500).json({
       error: 'Backend Execution Error',
       message: err?.message || String(err),
+      stack: err?.stack,
     });
   }
 }
