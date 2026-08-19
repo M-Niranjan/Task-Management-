@@ -10,7 +10,11 @@ exports.AppService = void 0;
 const common_1 = require("@nestjs/common");
 let AppService = class AppService {
     getHello() {
-        return 'Hello World!';
+        return {
+            status: 'ok',
+            message: 'Pyramid Task Management Backend API is running successfully!',
+            timestamp: new Date().toISOString(),
+        };
     }
 };
 exports.AppService = AppService;

@@ -5,7 +5,9 @@ import { ValidationPipe } from '@nestjs/common';
 let cachedServer: any;
 
 async function bootstrapServer() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'log'],
+  });
   app.enableCors({
     origin: true,
     credentials: true,
@@ -16,8 +18,16 @@ async function bootstrapServer() {
 }
 
 export default async function handler(req: any, res: any) {
-  if (!cachedServer) {
-    cachedServer = await bootstrapServer();
+  try {
+    if (!cachedServer) {
+      cachedServer = await bootstrapServer();
+    }
+    return cachedServer(req, res);
+  } catch (err: any) {
+    console.error('SERVERLESS BOOTSTRAP ERROR:', err);
+    return res.status(500).json({
+      error: 'Backend Initialization Error',
+      details: err?.message || String(err),
+    });
   }
-  return cachedServer(req, res);
 }

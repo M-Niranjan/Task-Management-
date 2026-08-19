@@ -6,7 +6,9 @@ const app_module_1 = require("../src/app.module");
 const common_1 = require("@nestjs/common");
 let cachedServer;
 async function bootstrapServer() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, {
+        logger: ['error', 'warn', 'log'],
+    });
     app.enableCors({
         origin: true,
         credentials: true,
@@ -16,9 +18,18 @@ async function bootstrapServer() {
     return app.getHttpAdapter().getInstance();
 }
 async function handler(req, res) {
-    if (!cachedServer) {
-        cachedServer = await bootstrapServer();
+    try {
+        if (!cachedServer) {
+            cachedServer = await bootstrapServer();
+        }
+        return cachedServer(req, res);
     }
-    return cachedServer(req, res);
+    catch (err) {
+        console.error('SERVERLESS BOOTSTRAP ERROR:', err);
+        return res.status(500).json({
+            error: 'Backend Initialization Error',
+            details: err?.message || String(err),
+        });
+    }
 }
 //# sourceMappingURL=index.js.map

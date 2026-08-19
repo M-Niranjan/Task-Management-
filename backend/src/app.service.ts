@@ -2,7 +2,11 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): string {
-    return 'Hello World!';
+  getHello() {
+    return {
+      status: 'ok',
+      message: 'Pyramid Task Management Backend API is running successfully!',
+      timestamp: new Date().toISOString(),
+    };
   }
 }
