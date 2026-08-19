@@ -33,24 +33,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const loginAsGuest = async () => {
-    try {
-      const res = await fetch("/api/auth/guest", { method: "POST" });
-      const data = await res.json();
-      setUser(data.user);
-      localStorage.setItem("tm-user", JSON.stringify(data.user));
-      localStorage.setItem("tm-token", data.token);
-    } catch {
-      // fallback guest user if backend unavailable
-      const guest: Member = {
-        _id: "guest-" + Date.now(),
-        name: "Dexter",
-        email: "dexter@gmail.com",
-        initials: "DX",
-        isGuest: true,
-      };
-      setUser(guest);
-      localStorage.setItem("tm-user", JSON.stringify(guest));
+    const res = await fetch("/api/auth/guest", { method: "POST" });
+    const data = await res.json();
+    if (!res.ok || data.error) {
+      throw new Error(data.error || "Backend / Database connection failed");
     }
+    setUser(data.user);
+    localStorage.setItem("tm-user", JSON.stringify(data.user));
+    localStorage.setItem("tm-token", data.token);
   };
 
   const logout = () => {

@@ -3,17 +3,25 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/ui/button"
 import { useState } from "react"
+import { AlertCircle } from "lucide-react"
 
 export default function AuthPage() {
   const { loginAsGuest } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleGuest = async () => {
     setLoading(true)
-    await loginAsGuest()
-    router.push("/tasks")
-    setLoading(false)
+    setError(null)
+    try {
+      await loginAsGuest()
+      router.push("/tasks")
+    } catch (err: any) {
+      setError(err?.message || "Failed to connect to backend or database server.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -33,13 +41,20 @@ export default function AuthPage() {
           <p className="text-sm text-muted-foreground">Enter your email below to login to your account.</p>
         </div>
 
+        {error && (
+          <div className="mb-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 text-xs flex items-start gap-2">
+            <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+            <span>{error}</span>
+          </div>
+        )}
+
         <div className="space-y-3">
           <Button
             onClick={handleGuest}
             disabled={loading}
             className="w-full h-11 rounded-full bg-foreground text-background hover:bg-foreground/90 text-sm font-medium"
           >
-            {loading ? "Loading..." : "Continue as Guest"}
+            {loading ? "Connecting to server..." : "Continue as Guest"}
           </Button>
 
           <Button
