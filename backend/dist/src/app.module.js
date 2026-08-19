@@ -21,7 +21,9 @@ exports.AppModule = AppModule = __decorate([
         imports: [
             config_1.ConfigModule.forRoot({ isGlobal: true }),
             mongoose_1.MongooseModule.forRoot(process.env.MONGODB_URI ||
-                'mongodb+srv://niranjanmathapati65_db_user:k1N8zVLszsbmddLl@cluster0.fw4faax.mongodb.net/taskmanager?appName=Cluster0'),
+                'mongodb+srv://niranjanmathapati65_db_user:k1N8zVLszsbmddLl@cluster0.fw4faax.mongodb.net/taskmanager?appName=Cluster0', {
+                serverSelectionTimeoutMS: 5000,
+            }),
             auth_module_1.AuthModule,
             tasks_module_1.TasksModule,
             projects_module_1.ProjectsModule,

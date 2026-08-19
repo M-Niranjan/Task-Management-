@@ -11,6 +11,9 @@ import { ProjectsModule } from './projects/projects.module';
     MongooseModule.forRoot(
       process.env.MONGODB_URI ||
         'mongodb+srv://niranjanmathapati65_db_user:k1N8zVLszsbmddLl@cluster0.fw4faax.mongodb.net/taskmanager?appName=Cluster0',
+      {
+        serverSelectionTimeoutMS: 5000,
+      },
     ),
     AuthModule,
     TasksModule,

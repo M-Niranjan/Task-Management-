@@ -1,29 +1,23 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from '../src/app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import express from 'express';
 
-const server = express();
-let isInitialized = false;
+let cachedServer: any;
 
-async function bootstrap() {
-  const app = await NestFactory.create(
-    AppModule,
-    new ExpressAdapter(server),
-  );
+async function bootstrapServer() {
+  const app = await NestFactory.create(AppModule);
   app.enableCors({
     origin: true,
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   await app.init();
-  isInitialized = true;
+  return app.getHttpAdapter().getInstance();
 }
 
 export default async function handler(req: any, res: any) {
-  if (!isInitialized) {
-    await bootstrap();
+  if (!cachedServer) {
+    cachedServer = await bootstrapServer();
   }
-  return server(req, res);
+  return cachedServer(req, res);
 }
