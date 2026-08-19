@@ -13,21 +13,6 @@ exports.TaskSchema = exports.Task = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 let Task = class Task {
-    title;
-    description;
-    status;
-    priority;
-    members;
-    labels;
-    dueDate;
-    projectId;
-    subtasks;
-    comments;
-    createdBy;
-    reporter;
-    teams;
-    resources;
-    viewerCount;
 };
 exports.Task = Task;
 __decorate([

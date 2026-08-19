@@ -24,7 +24,7 @@ export declare const UserSchema: import("mongoose").Schema<User, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     email?: import("mongoose").SchemaDefinitionProperty<string, User, Document<unknown, {}, User, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<User & {
@@ -33,8 +33,8 @@ export declare const UserSchema: import("mongoose").Schema<User, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    avatar?: import("mongoose").SchemaDefinitionProperty<string | undefined, User, Document<unknown, {}, User, {
+    }>>;
+    avatar?: import("mongoose").SchemaDefinitionProperty<string, User, Document<unknown, {}, User, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<User & {
         _id: import("mongoose").Types.ObjectId;
@@ -42,7 +42,7 @@ export declare const UserSchema: import("mongoose").Schema<User, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     isGuest?: import("mongoose").SchemaDefinitionProperty<boolean, User, Document<unknown, {}, User, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<User & {
@@ -51,7 +51,7 @@ export declare const UserSchema: import("mongoose").Schema<User, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     initials?: import("mongoose").SchemaDefinitionProperty<string, User, Document<unknown, {}, User, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<User & {
@@ -60,5 +60,5 @@ export declare const UserSchema: import("mongoose").Schema<User, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
 }, User>;

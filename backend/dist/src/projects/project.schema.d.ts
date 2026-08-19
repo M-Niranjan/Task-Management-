@@ -24,7 +24,7 @@ export declare const ProjectSchema: import("mongoose").Schema<Project, import("m
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     priority?: import("mongoose").SchemaDefinitionProperty<string, Project, Document<unknown, {}, Project, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Project & {
@@ -33,8 +33,8 @@ export declare const ProjectSchema: import("mongoose").Schema<Project, import("m
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    lead?: import("mongoose").SchemaDefinitionProperty<object | undefined, Project, Document<unknown, {}, Project, {
+    }>>;
+    lead?: import("mongoose").SchemaDefinitionProperty<object, Project, Document<unknown, {}, Project, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Project & {
         _id: import("mongoose").Types.ObjectId;
@@ -42,8 +42,8 @@ export declare const ProjectSchema: import("mongoose").Schema<Project, import("m
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    dueDate?: import("mongoose").SchemaDefinitionProperty<string | undefined, Project, Document<unknown, {}, Project, {
+    }>>;
+    dueDate?: import("mongoose").SchemaDefinitionProperty<string, Project, Document<unknown, {}, Project, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Project & {
         _id: import("mongoose").Types.ObjectId;
@@ -51,8 +51,8 @@ export declare const ProjectSchema: import("mongoose").Schema<Project, import("m
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    createdBy?: import("mongoose").SchemaDefinitionProperty<object | undefined, Project, Document<unknown, {}, Project, {
+    }>>;
+    createdBy?: import("mongoose").SchemaDefinitionProperty<object, Project, Document<unknown, {}, Project, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Project & {
         _id: import("mongoose").Types.ObjectId;
@@ -60,5 +60,5 @@ export declare const ProjectSchema: import("mongoose").Schema<Project, import("m
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
 }, Project>;

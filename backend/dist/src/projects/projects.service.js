@@ -18,7 +18,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const project_schema_1 = require("./project.schema");
 let ProjectsService = class ProjectsService {
-    projectModel;
     constructor(projectModel) {
         this.projectModel = projectModel;
     }

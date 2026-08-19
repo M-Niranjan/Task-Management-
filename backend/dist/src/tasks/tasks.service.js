@@ -18,7 +18,6 @@ const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const task_schema_1 = require("./task.schema");
 let TasksService = class TasksService {
-    taskModel;
     constructor(taskModel) {
         this.taskModel = taskModel;
     }

@@ -16,7 +16,6 @@ exports.TasksController = void 0;
 const common_1 = require("@nestjs/common");
 const tasks_service_1 = require("./tasks.service");
 let TasksController = class TasksController {
-    tasksService;
     constructor(tasksService) {
         this.tasksService = tasksService;
     }

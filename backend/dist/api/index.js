@@ -1,34 +1,43 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = handler;
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("../src/app.module");
 const common_1 = require("@nestjs/common");
-let cachedServer;
-async function bootstrapServer() {
-    const app = await core_1.NestFactory.create(app_module_1.AppModule, {
-        logger: ['error', 'warn', 'log'],
-    });
+const platform_express_1 = require("@nestjs/platform-express");
+const express_1 = __importDefault(require("express"));
+const server = (0, express_1.default)();
+let isReady = false;
+let bootPromise = null;
+async function bootstrap() {
+    const app = await core_1.NestFactory.create(app_module_1.AppModule, new platform_express_1.ExpressAdapter(server), { logger: ['error', 'warn', 'log'] });
     app.enableCors({
         origin: true,
         credentials: true,
     });
     app.useGlobalPipes(new common_1.ValidationPipe({ whitelist: true, transform: true }));
     await app.init();
-    return app.getHttpAdapter().getInstance();
 }
 async function handler(req, res) {
     try {
-        if (!cachedServer) {
-            cachedServer = await bootstrapServer();
+        if (!isReady) {
+            if (!bootPromise) {
+                bootPromise = bootstrap().then(() => {
+                    isReady = true;
+                });
+            }
+            await bootPromise;
         }
-        return cachedServer(req, res);
+        return server(req, res);
     }
     catch (err) {
-        console.error('SERVERLESS BOOTSTRAP ERROR:', err);
+        console.error('SERVERLESS HANDLER ERROR:', err);
         return res.status(500).json({
-            error: 'Backend Initialization Error',
-            details: err?.message || String(err),
+            error: 'Backend Execution Error',
+            message: err?.message || String(err),
         });
     }
 }

@@ -34,8 +34,8 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    description?: import("mongoose").SchemaDefinitionProperty<string | undefined, Task, Document<unknown, {}, Task, {
+    }>>;
+    description?: import("mongoose").SchemaDefinitionProperty<string, Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
         _id: Types.ObjectId;
@@ -43,7 +43,7 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     status?: import("mongoose").SchemaDefinitionProperty<string, Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
@@ -52,7 +52,7 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     priority?: import("mongoose").SchemaDefinitionProperty<string, Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
@@ -61,7 +61,7 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     members?: import("mongoose").SchemaDefinitionProperty<object[], Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
@@ -70,7 +70,7 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     labels?: import("mongoose").SchemaDefinitionProperty<string[], Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
@@ -79,8 +79,8 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    dueDate?: import("mongoose").SchemaDefinitionProperty<string | undefined, Task, Document<unknown, {}, Task, {
+    }>>;
+    dueDate?: import("mongoose").SchemaDefinitionProperty<string, Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
         _id: Types.ObjectId;
@@ -88,8 +88,8 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    projectId?: import("mongoose").SchemaDefinitionProperty<Types.ObjectId | undefined, Task, Document<unknown, {}, Task, {
+    }>>;
+    projectId?: import("mongoose").SchemaDefinitionProperty<Types.ObjectId, Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
         _id: Types.ObjectId;
@@ -97,7 +97,7 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     subtasks?: import("mongoose").SchemaDefinitionProperty<object[], Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
@@ -106,7 +106,7 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     comments?: import("mongoose").SchemaDefinitionProperty<object[], Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
@@ -115,8 +115,8 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    createdBy?: import("mongoose").SchemaDefinitionProperty<object | undefined, Task, Document<unknown, {}, Task, {
+    }>>;
+    createdBy?: import("mongoose").SchemaDefinitionProperty<object, Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
         _id: Types.ObjectId;
@@ -124,8 +124,8 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    reporter?: import("mongoose").SchemaDefinitionProperty<object | undefined, Task, Document<unknown, {}, Task, {
+    }>>;
+    reporter?: import("mongoose").SchemaDefinitionProperty<object, Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
         _id: Types.ObjectId;
@@ -133,7 +133,7 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     teams?: import("mongoose").SchemaDefinitionProperty<string[], Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
@@ -142,8 +142,8 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
-    resources?: import("mongoose").SchemaDefinitionProperty<string | undefined, Task, Document<unknown, {}, Task, {
+    }>>;
+    resources?: import("mongoose").SchemaDefinitionProperty<string, Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
         _id: Types.ObjectId;
@@ -151,7 +151,7 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
     viewerCount?: import("mongoose").SchemaDefinitionProperty<number, Task, Document<unknown, {}, Task, {
         id: string;
     }, import("mongoose").DefaultSchemaOptions> & Omit<Task & {
@@ -160,5 +160,5 @@ export declare const TaskSchema: import("mongoose").Schema<Task, import("mongoos
         __v: number;
     }, "id"> & import("mongoose").HydratedDocumentOverrides<{
         id: string;
-    }>> | undefined;
+    }>>;
 }, Task>;

@@ -12,11 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProjectSchema = exports.Project = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 let Project = class Project {
-    name;
-    priority;
-    lead;
-    dueDate;
-    createdBy;
 };
 exports.Project = Project;
 __decorate([
