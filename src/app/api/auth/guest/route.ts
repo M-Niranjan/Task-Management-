@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
   try {
-    // Try to proxy to NestJS backend
-    const res = await fetch("http://localhost:4000/auth/guest", {
+    const BACKEND = process.env.BACKEND_URL || "http://localhost:4000"
+    const res = await fetch(`${BACKEND}/auth/guest`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
     })

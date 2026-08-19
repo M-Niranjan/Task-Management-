@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 
-const BACKEND = "http://localhost:4000"
+const BACKEND = process.env.BACKEND_URL || "http://localhost:4000"
 
 async function proxy(req: NextRequest, path: string, method: string, body?: unknown) {
   try {
