@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Design Tokens — CSS Custom Properties
+   ============================================================ */
+:root {
+  /* Base colors */
+  --background: 0 0% 100%;
+  --foreground: 0 0% 9%;
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 9%;
+  --muted: 0 0% 96%;
+  --muted-foreground: 0 0% 45%;
+  --border: 0 0% 90%;
+  --input: 0 0% 90%;
+  --accent: 0 0% 96%;
+  --accent-foreground: 0 0% 9%;
+
+  /* Default primary (blue) */
+  --primary: 221 83% 53%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 221 83% 53%;
+
+  --radius: 0.75rem;
+}
+
+/* Dark mode */
+.dark {
+  --background: 0 0% 7%;
+  --foreground: 0 0% 95%;
+  --card: 0 0% 10%;
+  --card-foreground: 0 0% 95%;
+  --popover: 0 0% 10%;
+  --popover-foreground: 0 0% 95%;
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 60%;
+  --border: 0 0% 18%;
+  --input: 0 0% 18%;
+  --accent: 0 0% 15%;
+  --accent-foreground: 0 0% 95%;
+}
+
+/* Color modes */
+[data-color="amber"] { --primary: 38 92% 50%; --ring: 38 92% 50%; }
+[data-color="blue"]  { --primary: 221 83% 53%; --ring: 221 83% 53%; }
+[data-color="pink"]  { --primary: 330 81% 60%; --ring: 330 81% 60%; }
+[data-color="rose"]  { --primary: 347 77% 50%; --ring: 347 77% 50%; }
+[data-color="emerald"] { --primary: 160 84% 39%; --ring: 160 84% 39%; }
+[data-color="black"] { --primary: 0 0% 9%; --ring: 0 0% 9%; }
+
+/* ============================================================
+   Base styles
+   ============================================================ */
+* { box-sizing: border-box; }
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-inter, 'Inter', system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Tailwind theme mappings */
+@theme inline {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --font-sans: var(--font-inter, 'Inter', system-ui, sans-serif);
+  --radius: var(--radius);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.5); }
+
+/* Smooth transitions */
+*, *::before, *::after { transition-property: color, background-color, border-color; transition-duration: 150ms; }
+
+/* Animations */
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes zoom-in-95 { from { transform: scale(0.95); } to { transform: scale(1); } }
+@keyframes fade-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes zoom-out-95 { from { transform: scale(1); } to { transform: scale(0.95); } }
+
+.animate-in { animation: fade-in 150ms ease-out, zoom-in-95 150ms ease-out; }
+.animate-out { animation: fade-out 150ms ease-in, zoom-out-95 150ms ease-in; }
+
+[data-state="open"].animate-in { animation: fade-in 150ms ease-out, zoom-in-95 150ms ease-out; }
+[data-state="closed"].animate-out { animation: fade-out 150ms ease-in; }
