@@ -1,53 +1,48 @@
-const fs = require('fs');
-const path = require('path');
+require('reflect-metadata');
+const { NestFactory } = require('@nestjs/core');
+const { AppModule } = require('../dist/app.module');
+const { ValidationPipe } = require('@nestjs/common');
+const { ExpressAdapter } = require('@nestjs/platform-express');
+const express = require('express');
 
-module.exports = function handler(req, res) {
-  const info = {};
+const server = express();
+let isReady = false;
+let bootPromise = null;
 
+async function bootstrap() {
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(server),
+    { logger: ['error', 'warn', 'log'] },
+  );
+  app.enableCors({
+    origin: true,
+    credentials: true,
+  });
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  await app.init();
+}
+
+module.exports = async function handler(req, res) {
   try {
-    // Check where we are
-    info.cwd = process.cwd();
-    info.dirname = __dirname;
-
-    // Check if dist folder exists
-    const distPath = path.join(__dirname, '..', 'dist');
-    info.dist_path = distPath;
-    info.dist_exists = fs.existsSync(distPath);
-
-    if (info.dist_exists) {
-      info.dist_files = fs.readdirSync(distPath);
+    if (!isReady) {
+      if (!bootPromise) {
+        bootPromise = bootstrap().then(() => {
+          isReady = true;
+        }).catch((err) => {
+          bootPromise = null;
+          throw err;
+        });
+      }
+      await bootPromise;
     }
-
-    // Check if node_modules exists
-    const nmPath = path.join(__dirname, '..', 'node_modules');
-    info.node_modules_exists = fs.existsSync(nmPath);
-
-    // Try to load reflect-metadata
-    try {
-      require('reflect-metadata');
-      info.reflect_metadata = 'OK';
-    } catch (e) {
-      info.reflect_metadata = e.message;
-    }
-
-    // Try to load @nestjs/core
-    try {
-      const nest = require('@nestjs/core');
-      info.nestjs_core = 'OK - ' + Object.keys(nest).slice(0, 5).join(', ');
-    } catch (e) {
-      info.nestjs_core = e.message;
-    }
-
-    // Try to load AppModule from dist
-    try {
-      const appMod = require('../dist/app.module');
-      info.app_module = 'OK - exports: ' + Object.keys(appMod).join(', ');
-    } catch (e) {
-      info.app_module = e.message;
-    }
-
-    res.status(200).json(info);
+    return server(req, res);
   } catch (err) {
-    res.status(500).json({ error: err.message, stack: err.stack, info });
+    console.error('SERVERLESS HANDLER ERROR:', err);
+    return res.status(500).json({
+      error: 'Backend Execution Error',
+      message: err && err.message ? err.message : String(err),
+      stack: err && err.stack ? err.stack : undefined,
+    });
   }
 };
