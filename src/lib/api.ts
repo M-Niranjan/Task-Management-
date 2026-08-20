@@ -76,6 +76,7 @@ export const api = {
   tasks: {
     list: (projectId?: string) =>
       request<object[]>(`/tasks${projectId ? `?projectId=${projectId}` : ""}`),
+    get: (id: string) => request<object>(`/tasks/${id}`),
     create: (data: object) => request<object>("/tasks", { method: "POST", body: JSON.stringify(data) }),
     update: (id: string, data: object) =>
       request<object>(`/tasks/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
@@ -85,6 +86,7 @@ export const api = {
   },
   projects: {
     list: () => request<object[]>("/projects"),
+    get: (id: string) => request<object>(`/projects/${id}`),
     create: (data: object) => request<object>("/projects", { method: "POST", body: JSON.stringify(data) }),
     update: (id: string, data: object) =>
       request<object>(`/projects/${id}`, { method: "PATCH", body: JSON.stringify(data) }),
