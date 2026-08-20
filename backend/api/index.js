@@ -15,7 +15,7 @@ process.on('uncaughtException', (err) => {
   console.error('SERVERLESS UNCAUGHT EXCEPTION:', err);
 });
 
-// Middleware: Always append CORS headers to all requests and responses
+// Middleware: Always append CORS headers to every request and response
 server.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
@@ -57,6 +57,21 @@ async function bootstrap() {
   console.log('✅ NestJS application ready');
 }
 
+// Timeout helper to prevent Vercel 10s function aborts
+function timeoutPromise(ms) {
+  return new Promise((_, reject) =>
+    setTimeout(
+      () =>
+        reject(
+          new Error(
+            `NestJS initialization timed out after ${ms}ms. This is caused by MongoDB Atlas blocking connections from Vercel. Please ensure 0.0.0.0/0 is added in MongoDB Atlas -> Network Access.`,
+          ),
+        ),
+      ms,
+    ),
+  );
+}
+
 module.exports = async function handler(req, res) {
   // Always ensure CORS headers are set on the outgoing response
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -79,7 +94,7 @@ module.exports = async function handler(req, res) {
   try {
     if (!isReady) {
       if (!bootPromise) {
-        bootPromise = bootstrap().catch((err) => {
+        bootPromise = Promise.race([bootstrap(), timeoutPromise(4500)]).catch((err) => {
           bootPromise = null;
           throw err;
         });
@@ -92,6 +107,7 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({
       error: 'Backend Initialization Error',
       message: err && err.message ? err.message : String(err),
+      hint: 'Check MongoDB Atlas -> Network Access -> IP Access List -> Allow access from anywhere (0.0.0.0/0)',
     });
   }
 };
