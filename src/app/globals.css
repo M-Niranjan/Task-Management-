@@ -27,7 +27,7 @@
 }
 
 /* Dark mode */
-.dark {
+.dark, html.dark, [data-theme="dark"] {
   --background: 0 0% 7%;
   --foreground: 0 0% 95%;
   --card: 0 0% 10%;
@@ -43,12 +43,19 @@
 }
 
 /* Color modes */
-[data-color="amber"] { --primary: 38 92% 50%; --ring: 38 92% 50%; }
-[data-color="blue"]  { --primary: 221 83% 53%; --ring: 221 83% 53%; }
-[data-color="pink"]  { --primary: 330 81% 60%; --ring: 330 81% 60%; }
-[data-color="rose"]  { --primary: 347 77% 50%; --ring: 347 77% 50%; }
-[data-color="emerald"] { --primary: 160 84% 39%; --ring: 160 84% 39%; }
-[data-color="black"] { --primary: 0 0% 9%; --ring: 0 0% 9%; }
+:root[data-color="amber"], html[data-color="amber"] { --primary: 38 92% 50%; --primary-foreground: 0 0% 100%; --ring: 38 92% 50%; }
+:root[data-color="blue"], html[data-color="blue"]   { --primary: 221 83% 53%; --primary-foreground: 0 0% 100%; --ring: 221 83% 53%; }
+:root[data-color="pink"], html[data-color="pink"]   { --primary: 330 81% 60%; --primary-foreground: 0 0% 100%; --ring: 330 81% 60%; }
+:root[data-color="rose"], html[data-color="rose"]   { --primary: 347 77% 50%; --primary-foreground: 0 0% 100%; --ring: 347 77% 50%; }
+:root[data-color="emerald"], html[data-color="emerald"] { --primary: 160 84% 39%; --primary-foreground: 0 0% 100%; --ring: 160 84% 39%; }
+:root[data-color="black"], html[data-color="black"] { --primary: 0 0% 12%; --primary-foreground: 0 0% 100%; --ring: 0 0% 12%; }
+
+.dark[data-color="amber"], html.dark[data-color="amber"] { --primary: 38 92% 50%; --primary-foreground: 0 0% 100%; --ring: 38 92% 50%; }
+.dark[data-color="blue"], html.dark[data-color="blue"] { --primary: 217 91% 60%; --primary-foreground: 0 0% 100%; --ring: 217 91% 60%; }
+.dark[data-color="pink"], html.dark[data-color="pink"] { --primary: 330 81% 60%; --primary-foreground: 0 0% 100%; --ring: 330 81% 60%; }
+.dark[data-color="rose"], html.dark[data-color="rose"] { --primary: 347 77% 55%; --primary-foreground: 0 0% 100%; --ring: 347 77% 55%; }
+.dark[data-color="emerald"], html.dark[data-color="emerald"] { --primary: 160 84% 42%; --primary-foreground: 0 0% 100%; --ring: 160 84% 42%; }
+.dark[data-color="black"], html.dark[data-color="black"] { --primary: 0 0% 95%; --primary-foreground: 0 0% 10%; --ring: 0 0% 95%; }
 
 /* ============================================================
    Base styles

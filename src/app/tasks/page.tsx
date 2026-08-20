@@ -8,11 +8,58 @@ import { KanbanBoard } from "@/ui/KanbanBoard"
 import { ListView } from "@/ui/ListView"
 import { TaskDetailDrawer } from "@/ui/TaskDetailDrawer"
 import { AddTaskModal } from "@/ui/AddTaskModal"
+import { Skeleton } from "@/ui/skeleton"
 import { api } from "@/lib/api"
 import type { Task, Status, VisibleFields } from "@/types"
 
 const DEFAULT_FIELDS: VisibleFields = { priority: true, members: true, dueDate: true, labels: false, status: false, reporter: false }
 const STATUSES: Status[] = ["todo", "doing", "completed", "on_hold"]
+
+function TaskLoader({ view }: { view: "list" | "board" }) {
+  if (view === "board") {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-full">
+        {[1, 2, 3, 4].map((col) => (
+          <div key={col} className="flex flex-col gap-3 rounded-2xl bg-muted/40 p-4 border border-border/50">
+            <div className="flex items-center justify-between pb-2 border-b border-border/40">
+              <Skeleton className="h-5 w-24 rounded-lg" />
+              <Skeleton className="h-5 w-6 rounded-full" />
+            </div>
+            {[1, 2, 3].map((card) => (
+              <div key={card} className="p-4 rounded-xl bg-card border border-border/60 shadow-sm space-y-3">
+                <Skeleton className="h-4 w-3/4 rounded" />
+                <Skeleton className="h-3 w-1/2 rounded" />
+                <div className="flex items-center justify-between pt-2">
+                  <Skeleton className="h-5 w-16 rounded-md" />
+                  <Skeleton className="h-6 w-6 rounded-full" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="border border-border rounded-xl overflow-hidden bg-card">
+      <div className="grid grid-cols-5 p-4 border-b border-border bg-muted/30 gap-4">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <Skeleton key={i} className="h-4 w-20 rounded" />
+        ))}
+      </div>
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div key={i} className="grid grid-cols-5 p-4 border-b border-border/50 gap-4 items-center">
+          <Skeleton className="h-4 w-36 rounded" />
+          <Skeleton className="h-5 w-16 rounded-md" />
+          <Skeleton className="h-6 w-6 rounded-full" />
+          <Skeleton className="h-4 w-24 rounded" />
+          <Skeleton className="h-6 w-6 rounded-md ml-auto" />
+        </div>
+      ))}
+    </div>
+  )
+}
 
 export default function TasksPage() {
   const { user, isLoading } = useAuth()
@@ -83,7 +130,6 @@ export default function TasksPage() {
       setTasks(prev => [created, ...prev])
     } catch (err) {
       console.error("Failed to create task:", err)
-      // Fallback local addition if API call fails
       const fallbackTask: Task = {
         _id: Date.now().toString(),
         title: data.title || "New Task",
@@ -130,11 +176,9 @@ export default function TasksPage() {
           onSidebarToggle={() => setSidebarCollapsed(p => !p)}
         />
 
-        <main className={`flex-1 overflow-auto p-6 ${view === "board" ? "" : ""}`}>
+        <main className="flex-1 overflow-auto p-6">
           {loadingTasks ? (
-            <div className="flex items-center justify-center h-64 text-sm text-muted-foreground">
-              Loading tasks...
-            </div>
+            <TaskLoader view={view} />
           ) : view === "board" ? (
             <KanbanBoard columns={columns} onTaskClick={setSelectedTask} onAddTask={handleAddTask} />
           ) : (

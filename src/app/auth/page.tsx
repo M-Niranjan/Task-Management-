@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 import { Button } from "@/ui/button"
 import { useState } from "react"
-import { AlertCircle } from "lucide-react"
+import { AlertCircle, Loader2 } from "lucide-react"
 
 export default function AuthPage() {
   const { loginAsGuest } = useAuth()
@@ -28,14 +28,14 @@ export default function AuthPage() {
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
       {/* Logo */}
       <div className="flex items-center gap-2.5 mb-8">
-        <div className="h-9 w-9 rounded-xl bg-foreground flex items-center justify-center shadow-md">
-          <span className="text-background text-base font-bold">▲</span>
+        <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center shadow-md">
+          <span className="text-primary-foreground text-base font-bold">▲</span>
         </div>
         <span className="text-lg font-semibold text-foreground tracking-tight">Pyramid</span>
       </div>
 
       {/* Card */}
-      <div className="w-full max-w-sm border border-border rounded-2xl p-8 shadow-sm bg-background">
+      <div className="w-full max-w-sm border border-border rounded-2xl p-8 shadow-sm bg-card">
         <div className="text-center mb-7">
           <h1 className="text-xl font-semibold text-foreground mb-1.5">Let&apos;s get back on track</h1>
           <p className="text-sm text-muted-foreground">Enter your email below to login to your account.</p>
@@ -52,9 +52,16 @@ export default function AuthPage() {
           <Button
             onClick={handleGuest}
             disabled={loading}
-            className="w-full h-11 rounded-full bg-foreground text-background hover:bg-foreground/90 text-sm font-medium"
+            className="w-full h-11 rounded-full text-sm font-medium"
           >
-            {loading ? "Connecting to server..." : "Continue as Guest"}
+            {loading ? (
+              <span className="flex items-center gap-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Connecting to server...
+              </span>
+            ) : (
+              "Continue as Guest"
+            )}
           </Button>
 
           <Button

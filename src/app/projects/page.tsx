@@ -13,6 +13,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Button } from "@/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/ui/dialog"
 import { DatePicker } from "@/ui/DatePicker"
+import { Skeleton } from "@/ui/skeleton"
 import { api } from "@/lib/api"
 
 const PRIORITIES: Priority[] = ["urgent", "high", "medium", "low", "none"]
@@ -106,7 +107,7 @@ export default function ProjectsPage() {
         />
 
         <main className="flex-1 overflow-auto p-6">
-          <div className="border border-border rounded-xl overflow-hidden">
+          <div className="border border-border rounded-xl overflow-hidden bg-card">
             <div className="grid grid-cols-[1fr_120px_100px_130px_80px] bg-muted/30 border-b border-border text-xs font-semibold text-muted-foreground uppercase tracking-wide">
               <div className="px-4 py-3">Projects</div>
               {fields.priority && <div className="px-4 py-3">Priority</div>}
@@ -116,7 +117,17 @@ export default function ProjectsPage() {
             </div>
 
             {loadingProjects ? (
-              <div className="p-8 text-center text-sm text-muted-foreground">Loading projects...</div>
+              <div className="divide-y divide-border/50">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="grid grid-cols-[1fr_120px_100px_130px_80px] px-4 py-3.5 items-center">
+                    <Skeleton className="h-4 w-48 rounded" />
+                    {fields.priority && <Skeleton className="h-5 w-16 rounded-md" />}
+                    {fields.members && <Skeleton className="h-6 w-6 rounded-full" />}
+                    {fields.dueDate && <Skeleton className="h-4 w-20 rounded" />}
+                    <Skeleton className="h-6 w-6 rounded-md ml-auto" />
+                  </div>
+                ))}
+              </div>
             ) : filtered.length === 0 ? (
               <div className="p-8 text-center text-sm text-muted-foreground">No projects found. Create one below!</div>
             ) : (
