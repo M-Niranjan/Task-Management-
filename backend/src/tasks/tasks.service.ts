@@ -9,25 +9,27 @@ export class TasksService {
 
   async findAll(projectId?: string): Promise<Task[]> {
     const filter = projectId ? { projectId } : {};
-    return this.taskModel.find(filter).sort({ createdAt: -1 }).exec();
+    return this.taskModel.find(filter).sort({ createdAt: -1 }).lean().exec();
   }
 
   async findOne(id: string): Promise<Task> {
-    const task = await this.taskModel.findById(id).exec();
+    const task = await this.taskModel.findById(id).lean().exec();
     if (!task) throw new NotFoundException(`Task ${id} not found`);
-    return task;
+    return task as Task;
   }
 
   async create(data: Partial<Task>): Promise<Task> {
-    return this.taskModel.create(data);
+    const created = await this.taskModel.create(data);
+    return created.toObject ? created.toObject() : created;
   }
 
   async update(id: string, data: Partial<Task>): Promise<Task> {
     const task = await this.taskModel
       .findByIdAndUpdate(id, data, { new: true })
+      .lean()
       .exec();
     if (!task) throw new NotFoundException(`Task ${id} not found`);
-    return task;
+    return task as Task;
   }
 
   async delete(id: string): Promise<void> {
@@ -37,8 +39,9 @@ export class TasksService {
   async addComment(id: string, comment: object): Promise<Task> {
     const task = await this.taskModel
       .findByIdAndUpdate(id, { $push: { comments: comment } }, { new: true })
+      .lean()
       .exec();
     if (!task) throw new NotFoundException(`Task ${id} not found`);
-    return task;
+    return task as Task;
   }
 }

@@ -17,7 +17,12 @@ const MONGODB_URI_FALLBACK =
       useFactory: () => ({
         uri: process.env.MONGODB_URI || MONGODB_URI_FALLBACK,
         serverSelectionTimeoutMS: 5000,
-        connectTimeoutMS: 10000,
+        connectTimeoutMS: 5000,
+        socketTimeoutMS: 30000,
+        maxPoolSize: 10,
+        minPoolSize: 1,
+        maxIdleTimeMS: 30000,
+        autoIndex: true, // Automatically ensures compound indexes are created
       }),
     }),
     AuthModule,
