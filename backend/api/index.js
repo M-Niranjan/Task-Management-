@@ -1,13 +1,13 @@
-import 'reflect-metadata';
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../dist/app.module';
-import { ValidationPipe } from '@nestjs/common';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import express from 'express';
+require('reflect-metadata');
+const { NestFactory } = require('@nestjs/core');
+const { AppModule } = require('../dist/app.module');
+const { ValidationPipe } = require('@nestjs/common');
+const { ExpressAdapter } = require('@nestjs/platform-express');
+const express = require('express');
 
 const server = express();
 let isReady = false;
-let bootPromise: Promise<void> | null = null;
+let bootPromise = null;
 
 async function bootstrap() {
   const app = await NestFactory.create(
@@ -23,7 +23,7 @@ async function bootstrap() {
   await app.init();
 }
 
-export default async function handler(req: any, res: any) {
+module.exports = async function handler(req, res) {
   try {
     if (!isReady) {
       if (!bootPromise) {
@@ -37,7 +37,7 @@ export default async function handler(req: any, res: any) {
       await bootPromise;
     }
     return server(req, res);
-  } catch (err: any) {
+  } catch (err) {
     console.error('SERVERLESS HANDLER ERROR:', err);
     return res.status(500).json({
       error: 'Backend Execution Error',
@@ -45,4 +45,4 @@ export default async function handler(req: any, res: any) {
       stack: err?.stack,
     });
   }
-}
+};
