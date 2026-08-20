@@ -7,7 +7,7 @@ const express = require('express');
 
 const server = express();
 
-// Global process error safety guards to prevent Lambda process termination
+// Global process error safety guards
 process.on('unhandledRejection', (reason) => {
   console.error('SERVERLESS UNHANDLED REJECTION:', reason);
 });
@@ -15,7 +15,7 @@ process.on('uncaughtException', (err) => {
   console.error('SERVERLESS UNCAUGHT EXCEPTION:', err);
 });
 
-// Enable CORS for all incoming requests including OPTIONS preflight
+// Middleware: Always append CORS headers to all requests and responses
 server.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
@@ -37,39 +37,28 @@ server.get(['/', '/health', '/api/health'], (req, res) => {
 
 let isReady = false;
 let bootPromise = null;
-let bootError = null;
 
 async function bootstrap() {
-  try {
-    const app = await NestFactory.create(
-      AppModule,
-      new ExpressAdapter(server),
-      { logger: ['error', 'warn', 'log'] },
-    );
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(server),
+    { logger: ['error', 'warn', 'log'] },
+  );
 
-    app.enableCors({
-      origin: '*',
-      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-      allowedHeaders: 'Content-Type, Authorization, Accept',
-    });
+  app.enableCors({
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'Content-Type, Authorization, Accept',
+  });
 
-    app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
-    await app.init();
-    isReady = true;
-    console.log('✅ NestJS serverless application initialized successfully');
-  } catch (err) {
-    bootError = {
-      message: err && err.message ? err.message : String(err),
-      name: err && err.name ? err.name : 'Error',
-      stack: err && err.stack ? err.stack : undefined,
-    };
-    console.error('❌ NestJS bootstrap error:', err);
-    throw err;
-  }
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  await app.init();
+  isReady = true;
+  console.log('✅ NestJS application ready');
 }
 
 module.exports = async function handler(req, res) {
-  // CORS fallback headers
+  // Always ensure CORS headers are set on the outgoing response
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
@@ -78,7 +67,7 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // Health check fast-path if root
+  // Health check fast path
   if (req.url === '/' || req.url === '/health' || req.url === '/api/health') {
     return res.status(200).json({
       status: 'ok',
@@ -87,29 +76,22 @@ module.exports = async function handler(req, res) {
     });
   }
 
-  if (bootError) {
+  try {
+    if (!isReady) {
+      if (!bootPromise) {
+        bootPromise = bootstrap().catch((err) => {
+          bootPromise = null;
+          throw err;
+        });
+      }
+      await bootPromise;
+    }
+    return server(req, res);
+  } catch (err) {
+    console.error('HANDLER ERROR:', err);
     return res.status(500).json({
-      error: 'NestJS Bootstrap Error',
-      bootError,
+      error: 'Backend Initialization Error',
+      message: err && err.message ? err.message : String(err),
     });
   }
-
-  if (!isReady) {
-    if (!bootPromise) {
-      bootPromise = bootstrap().catch((err) => {
-        bootPromise = null;
-      });
-    }
-    try {
-      await bootPromise;
-    } catch (err) {
-      return res.status(500).json({
-        error: 'NestJS Bootstrap Error',
-        message: err && err.message ? err.message : String(err),
-        stack: err && err.stack ? err.stack : undefined,
-      });
-    }
-  }
-
-  return server(req, res);
 };
