@@ -7,7 +7,15 @@ const express = require('express');
 
 const server = express();
 
-// Enable basic CORS at Express level first so even errors or preflights get CORS headers
+// Global process error safety guards to prevent Lambda process termination
+process.on('unhandledRejection', (reason) => {
+  console.error('SERVERLESS UNHANDLED REJECTION:', reason);
+});
+process.on('uncaughtException', (err) => {
+  console.error('SERVERLESS UNCAUGHT EXCEPTION:', err);
+});
+
+// Enable CORS for all incoming requests including OPTIONS preflight
 server.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
@@ -18,11 +26,11 @@ server.use((req, res, next) => {
   next();
 });
 
-// Add a root health check so GET / or GET /api/health always returns 200 OK immediately
-server.get(['/', '/api/health', '/health'], (req, res) => {
+// Root endpoints for instant health validation
+server.get(['/', '/health', '/api/health'], (req, res) => {
   res.json({
     status: 'ok',
-    message: 'NestJS Task Management Backend is running!',
+    message: 'NestJS Task Management Backend is active and running!',
     timestamp: new Date().toISOString(),
   });
 });
@@ -38,27 +46,30 @@ async function bootstrap() {
       new ExpressAdapter(server),
       { logger: ['error', 'warn', 'log'] },
     );
+
     app.enableCors({
       origin: '*',
       methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
       allowedHeaders: 'Content-Type, Authorization, Accept',
     });
+
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
     await app.init();
     isReady = true;
+    console.log('✅ NestJS serverless application initialized successfully');
   } catch (err) {
     bootError = {
-      message: err?.message || String(err),
-      name: err?.name,
-      stack: err?.stack,
+      message: err && err.message ? err.message : String(err),
+      name: err && err.name ? err.name : 'Error',
+      stack: err && err.stack ? err.stack : undefined,
     };
-    console.error('BOOTSTRAP ERROR:', err);
+    console.error('❌ NestJS bootstrap error:', err);
     throw err;
   }
 }
 
 module.exports = async function handler(req, res) {
-  // Always set CORS headers
+  // CORS fallback headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Accept');
@@ -67,10 +78,18 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // If bootstrap already failed previously, return the boot error directly
+  // Health check fast-path if root
+  if (req.url === '/' || req.url === '/health' || req.url === '/api/health') {
+    return res.status(200).json({
+      status: 'ok',
+      message: 'NestJS Task Management Backend is active and running!',
+      timestamp: new Date().toISOString(),
+    });
+  }
+
   if (bootError) {
     return res.status(500).json({
-      error: 'NestJS Bootstrap Failed Previously',
+      error: 'NestJS Bootstrap Error',
       bootError,
     });
   }
@@ -85,9 +104,9 @@ module.exports = async function handler(req, res) {
       await bootPromise;
     } catch (err) {
       return res.status(500).json({
-        error: 'NestJS Bootstrap Failed',
-        message: err?.message || String(err),
-        stack: err?.stack,
+        error: 'NestJS Bootstrap Error',
+        message: err && err.message ? err.message : String(err),
+        stack: err && err.stack ? err.stack : undefined,
       });
     }
   }
