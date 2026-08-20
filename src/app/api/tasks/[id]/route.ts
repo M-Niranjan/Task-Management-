@@ -1,29 +1,47 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from 'next/server';
+import dbConnect from '@/lib/mongodb';
+import { Task } from '@/models/Task';
 
-const BACKEND = process.env.BACKEND_URL || "http://localhost:4000"
-
-async function proxy(req: NextRequest, path: string, method: string, body?: unknown) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const token = req.headers.get("authorization")
-    const res = await fetch(`${BACKEND}${path}`, {
-      method,
-      headers: { "Content-Type": "application/json", ...(token ? { Authorization: token } : {}) },
-      body: body ? JSON.stringify(body) : undefined,
-    })
-    const data = await res.json()
-    return NextResponse.json(data, { status: res.status })
-  } catch {
-    return NextResponse.json({ error: "Backend unavailable" }, { status: 503 })
+    await dbConnect();
+    const body = await request.json();
+    const { id } = await params;
+
+    const task = await Task.findByIdAndUpdate(id, body, { new: true }).exec();
+    if (!task) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(task);
+  } catch (error) {
+    console.error('Update Task Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to update task' },
+      { status: 500 }
+    );
   }
 }
 
-export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  const body = await req.json()
-  return proxy(req, `/tasks/${id}`, "PATCH", body)
-}
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    await dbConnect();
+    const { id } = await params;
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params
-  return proxy(req, `/tasks/${id}`, "DELETE")
+    await Task.findByIdAndDelete(id).exec();
+    
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Delete Task Error:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete task' },
+      { status: 500 }
+    );
+  }
 }
