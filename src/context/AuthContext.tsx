@@ -1,6 +1,7 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
 import type { Member } from "@/types";
+import { api } from "@/lib/api";
 
 interface AuthContextType {
   user: Member | null;
@@ -33,14 +34,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const loginAsGuest = async () => {
-    const res = await fetch("/api/auth/guest", { method: "POST" });
-    const data = await res.json();
-    if (!res.ok || data.error) {
-      throw new Error(data.error || "Backend / Database connection failed");
+    try {
+      const data = await api.auth.guest();
+      setUser(data.user as Member);
+      localStorage.setItem("tm-user", JSON.stringify(data.user));
+      localStorage.setItem("tm-token", data.token);
+    } catch (error: any) {
+      throw new Error(error.message || "Backend / Database connection failed");
     }
-    setUser(data.user);
-    localStorage.setItem("tm-user", JSON.stringify(data.user));
-    localStorage.setItem("tm-token", data.token);
   };
 
   const logout = () => {
